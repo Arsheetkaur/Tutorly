@@ -1,5 +1,5 @@
 const {mongoose} = require("mongoose");
-const data = require("../../init/data");
+// const data = require("../init/data");
 const Schema = mongoose.Schema;
 
 

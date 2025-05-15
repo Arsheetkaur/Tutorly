@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const intData = require("./data");
+const intData = require("./data.js");
 const User = require("../public/models/chat.js");
 
 
