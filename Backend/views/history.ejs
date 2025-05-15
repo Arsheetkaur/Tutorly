@@ -1,0 +1,14 @@
+<%- layout('/layout/boilerplate')  %>
+
+<h1>This is history page</h1><br><form class="offset-1" action="/chat">
+    <button class="btn btn-success">chat</button>
+</form>
+<br><br>
+<% for(let chat of chatItems) { %>
+<div class="card col-3 offset-1">
+    <h4 class="mt-2 offset-1"><%= chat.message %></h4>
+    <p class="offset-1"><%= chat.date.toLocaleString("en-IN") %></p>
+    <form action="/<%= chat._id %>/delete?_method=DELETE" method="POST"><button class="btn btn-danger mb-2 offset-1">delete</button></form>
+</div><br>
+<% } %>
+
