@@ -3,6 +3,8 @@ const app = express();
 const path = require("path");
 const ejsMate =  require("ejs-mate");
 const mongoose = require("mongoose");
+const Chat = require("./public/models/chat.js");
+const methodOverride = require("method-override");
 
 const MONGO_URL = 'mongodb://127.0.0.1:27017/tutorly';
 
@@ -21,6 +23,8 @@ app.set("view engine", "ejs");
 app.engine("ejs", ejsMate);
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "/public")));
+app.use(express.urlencoded({extended: true}));
+app.use(methodOverride("_method"));
 
 
 // This is root route 
@@ -28,13 +32,45 @@ app.get("/", (req, res) => {
     res.send("Hello, I'm Root!!");
 });
 
+// app.get('/signup', (req, res) => {
+//     res.render("signup.ejs");
+// });
+
+// app.get('/login', (req, res) => {
+//     res.render("login.ejs");
+// });
+
 app.get("/home", (req, res) => {
     res.render("index.ejs");
 });
 
+app.get("/history", async (req, res) =>  {
+    const chatItems = await Chat.find();
+    res.render("history.ejs", { chatItems });
+});
 
-// This makes route sure that if someone send GET request to any route except what's defined he'll get response as defined of "Page Not Found"
-// I will make new page for this like so you won't see only "Page Not Found" but an actual interactive error page 
+app.get("/chat", (req, res) => {
+    res.render("chat.ejs");
+})
+
+app.post("/chat", async (req, res) => {
+    const newChat = req.body.message;
+
+    await Chat.insertOne({"message": newChat});
+    res.redirect("history");
+
+})
+
+app.get("/:id/delete", (req, res) => {
+    res.send("deleted");
+});
+
+app.delete("/:id/delete", async (req, res) => {
+    let {id} = req.params;
+    await Chat.findByIdAndDelete(id);
+    res.redirect("/history");
+})
+
 app.all(/.*/, (req, res) => {
     res.render("error.ejs");
 });
